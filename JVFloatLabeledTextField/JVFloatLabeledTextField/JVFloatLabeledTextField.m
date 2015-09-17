@@ -31,6 +31,19 @@
 static CGFloat const kFloatingLabelShowAnimationDuration = 0.3f;
 static CGFloat const kFloatingLabelHideAnimationDuration = 0.3f;
 
+static UIColor *colorForInvalidTextField;
+static UIColor *colorForValidTextField;
+static UIColor *colorForEditingTextField;
+
+@interface JVFloatLabeledTextField()
+
+@property (nonatomic, strong) CALayer* bottomBorder;
+@property (nonatomic, strong) CALayer* bottomBorderEdit;
+@property (nonatomic, assign) IUCustomTextFieldValidation textFieldValidationState;
+
+@end
+
+
 @implementation JVFloatLabeledTextField
 {
     BOOL _isFloatingLabelFontDefault;
@@ -56,9 +69,18 @@ static CGFloat const kFloatingLabelHideAnimationDuration = 0.3f;
 
 - (void)commonInit
 {
+    self.delegate = self;
     _floatingLabel = [UILabel new];
     _floatingLabel.alpha = 0.0f;
     [self addSubview:_floatingLabel];
+    
+    _floatingLabelError = [UILabel new];
+    [_floatingLabelError setText:@""];
+    [_floatingLabelError setFont:[self defaultFloatingLabelErrorFont]];
+    [_floatingLabelError setTextColor:self.colorForInvalidTextField];
+    [_floatingLabelError setTextAlignment:NSTextAlignmentLeft];
+    _floatingLabelError.alpha = 1.0f;
+    [self addSubview:_floatingLabelError];
 	
     // some basic default fonts/colors
     _floatingLabelFont = [self defaultFloatingLabelFont];
@@ -72,6 +94,48 @@ static CGFloat const kFloatingLabelHideAnimationDuration = 0.3f;
 
     _adjustsClearButtonRect = YES;
     _isFloatingLabelFontDefault = YES;
+}
+
+- (void)initBorder{
+    
+    if(!_bottomBorder)
+    {
+        _bottomBorder = [CALayer layer];
+        _bottomBorder.borderColor = self.colorForValidTextField.CGColor;
+        [self.layer addSublayer:_bottomBorder];
+    }
+    _bottomBorder.frame = CGRectMake(0, self.frame.size.height, self.frame.size.width, 1);
+    _bottomBorder.borderWidth = 1;
+    
+    self.layer.masksToBounds = NO;
+}
+
++(void)setupDefaultColorsForInvalidTextField:(UIColor*)invalidTextFieldColor
+                              validTextField:(UIColor*)validTextFieldColor
+                            editingTextField:(UIColor*)editingTextFieldColor{
+    colorForInvalidTextField = invalidTextFieldColor;
+    colorForValidTextField = validTextFieldColor;
+    colorForEditingTextField = editingTextFieldColor;
+}
+
+-(UIColor *)colorForEditingTextField{
+    if(!_colorForEditingTextField && colorForEditingTextField){
+        _colorForEditingTextField = colorForEditingTextField;
+    }
+    return _colorForEditingTextField;
+}
+
+-(UIColor *)colorForInvalidTextField{
+    if(!_colorForInvalidTextField && colorForInvalidTextField){
+        _colorForInvalidTextField = colorForInvalidTextField;
+    }
+    return _colorForInvalidTextField;
+}
+-(UIColor *)colorForValidTextField{
+    if(!_colorForValidTextField && colorForValidTextField){
+        _colorForValidTextField = colorForValidTextField;
+    }
+    return _colorForValidTextField;
 }
 
 #pragma mark -
@@ -264,7 +328,7 @@ static CGFloat const kFloatingLabelHideAnimationDuration = 0.3f;
 - (CGRect)insetRectForBounds:(CGRect)rect {
     CGFloat topInset = ceilf(_floatingLabel.bounds.size.height + _placeholderYPadding);
     topInset = MIN(topInset, [self maxTopInset]);
-    return CGRectMake(rect.origin.x, rect.origin.y + topInset / 2.0f, rect.size.width, rect.size.height);
+    return CGRectMake(rect.origin.x, rect.origin.y + topInset / 2.0f, rect.size.width-20, rect.size.height);
 }
 
 - (CGRect)clearButtonRectForBounds:(CGRect)bounds
@@ -291,11 +355,51 @@ static CGFloat const kFloatingLabelHideAnimationDuration = 0.3f;
     [self setNeedsLayout];
 }
 
+- (UIFont *)defaultFloatingLabelErrorFont
+{
+    return [UIFont fontWithName:@"Arial" size:11];
+}
+
+- (void)updateState:(IUCustomTextFieldValidation)validationState withMessage:(NSString *)message
+{
+    UIColor *lineColor = nil;
+    UIColor *borderlineColor = nil;
+    _textFieldValidationState = validationState;
+    
+    switch (validationState)
+    {
+        case IUCustomTextFieldValid:
+            lineColor = self.colorForValidTextField;
+            borderlineColor = self.colorForEditingTextField;
+            [_floatingLabelError setText:@""];
+            break;
+        case IUCustomTextFieldInvalid:
+            lineColor = self.colorForInvalidTextField;
+            borderlineColor = self.colorForInvalidTextField;
+            if(message){
+                [_floatingLabelError setText:message];
+            }
+            break;
+    }
+    
+    _bottomBorderEdit.borderColor = borderlineColor.CGColor;
+    _bottomBorder.borderColor = lineColor.CGColor;
+    self.layer.masksToBounds = NO;
+}
+
+- (void)setLabelErrorOriginForTextAlignment
+{
+    _floatingLabelError.frame = CGRectMake(0, self.frame.size.height + 2.0f,
+                                           300, 20.0f);
+}
+
 - (void)layoutSubviews
 {
     [super layoutSubviews];
     
     [self setLabelOriginForTextAlignment];
+    [self setLabelErrorOriginForTextAlignment];
+    [self initBorder];
     
     CGSize floatingLabelSize = [_floatingLabel sizeThatFits:_floatingLabel.superview.bounds.size];
     
@@ -313,6 +417,14 @@ static CGFloat const kFloatingLabelHideAnimationDuration = 0.3f;
     else {
         [self showFloatingLabel:firstResponder];
     }
+}
+
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    JVFloatLabeledTextField *field = (JVFloatLabeledTextField*)textField;
+    [field updateState:(IUCustomTextFieldValid) withMessage:@""];
+    
+    
+    return YES;
 }
 
 @end

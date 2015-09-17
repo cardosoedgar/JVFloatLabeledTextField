@@ -42,6 +42,8 @@ const static CGFloat kJVFieldFloatingLabelFontSize = 11.0f;
 
 @implementation JVFloatLabeledTextFieldViewController
 
+__strong JVFloatLabeledTextField *titleField;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -62,9 +64,12 @@ const static CGFloat kJVFieldFloatingLabelFontSize = 11.0f;
     [self.view setTintColor:[UIColor blueColor]];
 #endif
     
+    
+    [JVFloatLabeledTextField setupDefaultColorsForInvalidTextField:[UIColor redColor] validTextField:[UIColor grayColor] editingTextField:[UIColor clearColor]];
+    
     UIColor *floatingLabelColor = [UIColor brownColor];
     
-    JVFloatLabeledTextField *titleField = [[JVFloatLabeledTextField alloc] initWithFrame:CGRectZero];
+    titleField = [[JVFloatLabeledTextField alloc] initWithFrame:CGRectZero];
     titleField.font = [UIFont systemFontOfSize:kJVFieldFontSize];
     titleField.attributedPlaceholder =
     [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Title", @"")
@@ -77,7 +82,7 @@ const static CGFloat kJVFieldFloatingLabelFontSize = 11.0f;
     titleField.keepBaseline = YES;
 
     UIView *div1 = [UIView new];
-    div1.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.3f];
+    div1.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.3f];
     [self.view addSubview:div1];
     div1.translatesAutoresizingMaskIntoConstraints = NO;
 
@@ -129,6 +134,19 @@ const static CGFloat kJVFieldFloatingLabelFontSize = 11.0f;
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:priceField attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:locationField attribute:NSLayoutAttributeHeight multiplier:1.0 constant:0.0]];
 
     [titleField becomeFirstResponder];
+    
+    UIButton *botao = [[UIButton alloc] initWithFrame:CGRectMake(20, 350, 100, 20)];
+    botao.backgroundColor = [UIColor blueColor];
+    [botao setTitle:@"OK" forState:UIControlStateNormal];
+    [botao addTarget:self action:@selector(clique) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.view addSubview:botao];
+}
+
+-(void) clique {
+    if ([titleField.text isEqual:@""]) {
+        [titleField updateState:(IUCustomTextFieldInvalid) withMessage:@"insira o nome completo"];
+    }
 }
 
 - (void)didReceiveMemoryWarning

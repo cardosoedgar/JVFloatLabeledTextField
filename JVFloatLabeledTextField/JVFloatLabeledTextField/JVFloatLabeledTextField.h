@@ -40,13 +40,24 @@
  *
  * Credits for the concept to Matt D. Smith (@mds), and his original design:  http://mattdsmith.com/float-label-pattern/
  */
+typedef NS_ENUM(NSInteger, IUCustomTextFieldValidation)
+{
+    IUCustomTextFieldValid,
+    IUCustomTextFieldInvalid
+};
+
 IB_DESIGNABLE
-@interface JVFloatLabeledTextField : UITextField
+@interface JVFloatLabeledTextField : UITextField <UITextFieldDelegate>
 
 /**
  * Read-only access to the floating label.
  */
 @property (nonatomic, strong, readonly) UILabel * floatingLabel;
+
+/**
+ * Read-only access to the floating error label.
+ */
+@property (nonatomic, strong, readonly) UILabel * floatingLabelError;
 
 /**
  * Padding to be applied to the y coordinate of the floating label upon presentation.
@@ -99,7 +110,7 @@ IB_DESIGNABLE
 @property (nonatomic, assign) NSTimeInterval floatingLabelShowAnimationDuration;
 
 /**
- * Duration of the animation when hiding the floating label. 
+ * Duration of the animation when hiding the floating label.
  * Defaults to 0.3 seconds.
  */
 @property (nonatomic, assign) NSTimeInterval floatingLabelHideAnimationDuration;
@@ -123,5 +134,14 @@ IB_DESIGNABLE
  *  @param floatingTitle The string to be shown above the text field once it has been populated with text by the user.
  */
 - (void)setPlaceholder:(NSString *)placeholder floatingTitle:(NSString *)floatingTitle;
+
+- (void)updateState:(IUCustomTextFieldValidation)validationState withMessage:(NSString *)message;
+
+@property (nonatomic, strong) UIColor *colorForInvalidTextField;
+@property (nonatomic, strong) UIColor *colorForValidTextField;
+@property (nonatomic, strong) UIColor *colorForEditingTextField;
+
++(void)setupDefaultColorsForInvalidTextField:(UIColor*)invalidTextFieldColor validTextField:(UIColor*)validTextFieldColor editingTextField:(UIColor*)editingTextFieldColor;
+
 
 @end
