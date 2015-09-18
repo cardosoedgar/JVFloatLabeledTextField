@@ -135,6 +135,8 @@ IB_DESIGNABLE
  */
 - (void)setPlaceholder:(NSString *)placeholder floatingTitle:(NSString *)floatingTitle;
 
+@property (nonatomic, assign) IBInspectable BOOL hasBottomBorder;
+
 - (void)updateState:(IUCustomTextFieldValidation)validationState withMessage:(NSString *)message;
 
 @property (nonatomic, strong) UIColor *colorForInvalidTextField;

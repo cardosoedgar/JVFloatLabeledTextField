@@ -70,6 +70,7 @@ static UIColor *colorForEditingTextField;
 - (void)commonInit
 {
     self.delegate = self;
+    self.hasBottomBorder = YES;
     _floatingLabel = [UILabel new];
     _floatingLabel.alpha = 0.0f;
     [self addSubview:_floatingLabel];
@@ -98,7 +99,7 @@ static UIColor *colorForEditingTextField;
 
 - (void)initBorder{
     
-    if(!_bottomBorder)
+    if(!_bottomBorder&& _hasBottomBorder == YES)
     {
         _bottomBorder = [CALayer layer];
         _bottomBorder.borderColor = self.colorForValidTextField.CGColor;

@@ -80,6 +80,7 @@ __strong JVFloatLabeledTextField *titleField;
     [self.view addSubview:titleField];
     titleField.translatesAutoresizingMaskIntoConstraints = NO;
     titleField.keepBaseline = YES;
+    titleField.hasBottomBorder = NO;
 
     UIView *div1 = [UIView new];
     div1.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.3f];
