@@ -31,7 +31,16 @@
 static CGFloat const kFloatingLabelShowAnimationDuration = 0.3f;
 static CGFloat const kFloatingLabelHideAnimationDuration = 0.3f;
 
+static UIColor *colorForInvalidTextField;
+static UIColor *colorForValidTextField;
+static UIColor *colorForEditingTextField;
+
 @interface JVFloatLabeledTextView ()
+
+@property (nonatomic, strong) CALayer* bottomBorder;
+@property (nonatomic, strong) CALayer* bottomBorderEdit;
+@property (nonatomic, assign) IUCustomTextViewValidation textFieldValidationState;
+
 
 @property (nonatomic) CGFloat startingTextContainerInsetTop;
 
@@ -67,6 +76,14 @@ static CGFloat const kFloatingLabelHideAnimationDuration = 0.3f;
     self.startingTextContainerInsetTop = self.textContainerInset.top;
     self.floatingLabelShouldLockToTop = YES;
     self.textContainer.lineFragmentPadding = 0;
+    
+    _floatingLabelError = [UILabel new];
+    [_floatingLabelError setText:@""];
+    [_floatingLabelError setFont:[self defaultFloatingLabelErrorFont]];
+    [_floatingLabelError setTextColor:self.colorForInvalidTextField];
+    [_floatingLabelError setTextAlignment:NSTextAlignmentLeft];
+    _floatingLabelError.alpha = 1.0f;
+    [self addSubview:_floatingLabelError];
     
     _placeholderLabel = [[UILabel alloc] initWithFrame:self.frame];
     if (!self.font) {
@@ -108,6 +125,54 @@ static CGFloat const kFloatingLabelHideAnimationDuration = 0.3f;
                                              selector:@selector(layoutSubviews)
                                                  name:UITextViewTextDidEndEditingNotification
                                                object:self];
+}
+
+- (UIFont *)defaultFloatingLabelErrorFont
+{
+    return [UIFont fontWithName:@"Arial" size:11];
+}
+
+
+- (void)initBorder{
+    
+    if(!_bottomBorder && _hasBottomBorder == YES)
+    {
+        _bottomBorder = [CALayer layer];
+        _bottomBorder.borderColor = self.colorForValidTextField.CGColor;
+        [self.layer addSublayer:_bottomBorder];
+    }
+    _bottomBorder.frame = CGRectMake(0, self.frame.size.height-1, self.frame.size.width, 1);
+    _bottomBorder.borderWidth = 1;
+    
+    self.layer.masksToBounds = YES;
+}
+
++(void)setupDefaultColorsForInvalidTextField:(UIColor*)invalidTextFieldColor
+                              validTextField:(UIColor*)validTextFieldColor
+                            editingTextField:(UIColor*)editingTextFieldColor{
+    colorForInvalidTextField = invalidTextFieldColor;
+    colorForValidTextField = validTextFieldColor;
+    colorForEditingTextField = editingTextFieldColor;
+}
+
+-(UIColor *)colorForEditingTextField{
+    if(!_colorForEditingTextField && colorForEditingTextField){
+        _colorForEditingTextField = colorForEditingTextField;
+    }
+    return _colorForEditingTextField;
+}
+
+-(UIColor *)colorForInvalidTextField{
+    if(!_colorForInvalidTextField && colorForInvalidTextField){
+        _colorForInvalidTextField = colorForInvalidTextField;
+    }
+    return _colorForInvalidTextField;
+}
+-(UIColor *)colorForValidTextField{
+    if(!_colorForValidTextField && colorForValidTextField){
+        _colorForValidTextField = colorForValidTextField;
+    }
+    return _colorForValidTextField;
 }
 
 - (void)dealloc
@@ -164,10 +229,45 @@ static CGFloat const kFloatingLabelHideAnimationDuration = 0.3f;
     [self setNeedsLayout];
 }
 
+- (void)updateState:(IUCustomTextViewValidation)validationState withMessage:(NSString *)message
+{
+    UIColor *lineColor = nil;
+    UIColor *borderlineColor = nil;
+    _textFieldValidationState = validationState;
+    
+    switch (validationState)
+    {
+        case IUCustomTextViewValid:
+            lineColor = self.colorForValidTextField;
+            borderlineColor = self.colorForEditingTextField;
+            [_floatingLabelError setText:@""];
+            break;
+        case IUCustomTextViewInvalid:
+            lineColor = self.colorForInvalidTextField;
+            borderlineColor = self.colorForInvalidTextField;
+            if(message){
+                [_floatingLabelError setText:message];
+            }
+            break;
+    }
+    
+    _bottomBorderEdit.borderColor = borderlineColor.CGColor;
+    _bottomBorder.borderColor = lineColor.CGColor;
+    self.layer.masksToBounds = NO;
+}
+
+- (void)setLabelErrorOriginForTextAlignment
+{
+    _floatingLabelError.frame = CGRectMake(0, self.frame.size.height + 2.0f,
+                                           300, 20.0f);
+}
+
 - (void)layoutSubviews
 {
     [super layoutSubviews];
     [self adjustTextContainerInsetTop];
+    [self setLabelErrorOriginForTextAlignment];
+    [self initBorder];
     
     CGSize floatingLabelSize = [_floatingLabel sizeThatFits:_floatingLabel.superview.bounds.size];
     
@@ -357,6 +457,13 @@ static CGFloat const kFloatingLabelHideAnimationDuration = 0.3f;
     if (0 != self.floatingLabelShouldLockToTop) {
         _floatingLabel.backgroundColor = self.backgroundColor;
     }
+}
+
+-(BOOL)textView:(UITextView *)textView shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    JVFloatLabeledTextView *field = (JVFloatLabeledTextView*)textView;
+    [field updateState:(IUCustomTextViewValid) withMessage:@""];
+    
+    return YES;
 }
 
 @end

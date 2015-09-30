@@ -43,6 +43,7 @@ const static CGFloat kJVFieldFloatingLabelFontSize = 11.0f;
 @implementation JVFloatLabeledTextFieldViewController
 
 __strong JVFloatLabeledTextField *titleField;
+__strong JVFloatLabeledTextView *titleView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -66,6 +67,10 @@ __strong JVFloatLabeledTextField *titleField;
     
     
     [JVFloatLabeledTextField setupDefaultColorsForInvalidTextField:[UIColor redColor] validTextField:[UIColor grayColor] editingTextField:[UIColor clearColor]];
+
+    
+    [JVFloatLabeledTextView setupDefaultColorsForInvalidTextField:[UIColor redColor] validTextField:[UIColor grayColor] editingTextField:[UIColor clearColor]];
+
     
     UIColor *floatingLabelColor = [UIColor brownColor];
     
@@ -80,7 +85,7 @@ __strong JVFloatLabeledTextField *titleField;
     [self.view addSubview:titleField];
     titleField.translatesAutoresizingMaskIntoConstraints = NO;
     titleField.keepBaseline = YES;
-    titleField.hasBottomBorder = NO;
+    titleField.hasBottomBorder = YES;
 
     UIView *div1 = [UIView new];
     div1.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.3f];
@@ -141,6 +146,20 @@ __strong JVFloatLabeledTextField *titleField;
     [botao setTitle:@"OK" forState:UIControlStateNormal];
     [botao addTarget:self action:@selector(clique) forControlEvents:UIControlEventTouchUpInside];
     
+    titleView = [[JVFloatLabeledTextView alloc] initWithFrame:CGRectMake(100, 0, 100, 100)];
+    titleView.font = [UIFont systemFontOfSize:kJVFieldFontSize];
+    titleView.placeholder = NSLocalizedString(@"Teste", @"");
+    titleView.placeholderTextColor = [UIColor darkGrayColor];
+    titleView.floatingLabelFont = [UIFont boldSystemFontOfSize:kJVFieldFloatingLabelFontSize];
+    titleView.floatingLabelTextColor = floatingLabelColor;
+    titleView.translatesAutoresizingMaskIntoConstraints = NO;
+    titleView.hasBottomBorder = NO;
+    [titleView setContentMode:UIViewContentModeScaleToFill];
+    
+    [self.view bringSubviewToFront:titleView];
+    
+    [self.view addSubview:titleView];
+    
     [self.view addSubview:botao];
 }
 
@@ -148,6 +167,10 @@ __strong JVFloatLabeledTextField *titleField;
     if ([titleField.text isEqual:@""]) {
         [titleField updateState:(IUCustomTextFieldInvalid) withMessage:@"insira o nome completo"];
     }
+    if ([titleView.text isEqual:@""]) {
+        [titleView updateState:(IUCustomTextViewInvalid) withMessage:@"insira o texto"];
+    }
+    
 }
 
 - (void)didReceiveMemoryWarning
