@@ -141,7 +141,7 @@ IB_DESIGNABLE
  * Padding for bottomline in textView.
  * Defaults is 1.
  */
-@property (nonatomic, assign) NSInteger paddingForBottomLine UI_APPEARANCE_SELECTOR;
+@property (nonatomic, assign) IBInspectable NSInteger paddingForBottomLine;
 
 /**
  *  Sets the placeholder and the floating title
