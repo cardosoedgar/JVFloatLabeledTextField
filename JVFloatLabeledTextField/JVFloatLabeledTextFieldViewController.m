@@ -157,7 +157,7 @@ __strong JVFloatLabeledTextView *titleView;
     titleView.translatesAutoresizingMaskIntoConstraints = NO;
     titleView.hasBottomBorder = YES;
     [titleView setContentMode:UIViewContentModeScaleToFill];
-    titleView.paddingForBottomLine = 10;
+//    titleView.paddingForBottomLine = 10;
     
     [self.view bringSubviewToFront:titleView];
     
