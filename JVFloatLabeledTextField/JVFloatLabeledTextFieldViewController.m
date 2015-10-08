@@ -146,14 +146,14 @@ __strong JVFloatLabeledTextView *titleView;
     [botao setTitle:@"OK" forState:UIControlStateNormal];
     [botao addTarget:self action:@selector(clique) forControlEvents:UIControlEventTouchUpInside];
     
-    titleView = [[JVFloatLabeledTextView alloc] initWithFrame:CGRectMake(100, 0, 100, 100)];
+    titleView = [[JVFloatLabeledTextView alloc] initWithFrame:CGRectMake(100, 0, 100, 44)];
     titleView.font = [UIFont systemFontOfSize:kJVFieldFontSize];
     titleView.placeholder = NSLocalizedString(@"Teste", @"");
     titleView.placeholderTextColor = [UIColor darkGrayColor];
     titleView.floatingLabelFont = [UIFont boldSystemFontOfSize:kJVFieldFloatingLabelFontSize];
     titleView.floatingLabelTextColor = floatingLabelColor;
     titleView.translatesAutoresizingMaskIntoConstraints = NO;
-    titleView.hasBottomBorder = NO;
+    titleView.hasBottomBorder = YES;
     [titleView setContentMode:UIViewContentModeScaleToFill];
     
     [self.view bringSubviewToFront:titleView];

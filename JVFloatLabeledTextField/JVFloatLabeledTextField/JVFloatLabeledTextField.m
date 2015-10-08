@@ -372,7 +372,7 @@ static UIColor *colorForEditingTextField;
         case IUCustomTextFieldValid:
             lineColor = self.colorForValidTextField;
             borderlineColor = self.colorForEditingTextField;
-            [_floatingLabelError setText:@""];
+            [_floatingLabelError setText:message];
             break;
         case IUCustomTextFieldInvalid:
             lineColor = self.colorForInvalidTextField;

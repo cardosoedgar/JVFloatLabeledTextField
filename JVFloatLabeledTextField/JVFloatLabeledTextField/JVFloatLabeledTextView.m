@@ -240,7 +240,7 @@ static UIColor *colorForEditingTextField;
         case IUCustomTextViewValid:
             lineColor = self.colorForValidTextField;
             borderlineColor = self.colorForEditingTextField;
-            [_floatingLabelError setText:@""];
+            [_floatingLabelError setText:message];
             break;
         case IUCustomTextViewInvalid:
             lineColor = self.colorForInvalidTextField;
@@ -460,9 +460,10 @@ static UIColor *colorForEditingTextField;
 }
 
 -(BOOL)textView:(UITextView *)textView shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    [_bottomBorder removeFromSuperlayer];
     JVFloatLabeledTextView *field = (JVFloatLabeledTextView*)textView;
     [field updateState:(IUCustomTextViewValid) withMessage:@""];
-    
+    [self initBorder];
     return YES;
 }
 
