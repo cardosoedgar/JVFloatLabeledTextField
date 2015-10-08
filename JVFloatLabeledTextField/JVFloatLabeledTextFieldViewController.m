@@ -87,6 +87,8 @@ __strong JVFloatLabeledTextView *titleView;
     titleField.keepBaseline = YES;
     titleField.hasBottomBorder = YES;
 
+    
+    
     UIView *div1 = [UIView new];
     div1.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.3f];
     [self.view addSubview:div1];
@@ -155,6 +157,7 @@ __strong JVFloatLabeledTextView *titleView;
     titleView.translatesAutoresizingMaskIntoConstraints = NO;
     titleView.hasBottomBorder = YES;
     [titleView setContentMode:UIViewContentModeScaleToFill];
+    titleView.paddingForBottomLine = 10;
     
     [self.view bringSubviewToFront:titleView];
     

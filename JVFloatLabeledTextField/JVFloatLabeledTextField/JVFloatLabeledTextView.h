@@ -136,6 +136,13 @@ IB_DESIGNABLE
  */
 @property (nonatomic, assign) NSTimeInterval floatingLabelHideAnimationDuration UI_APPEARANCE_SELECTOR;
 
+
+/**
+ * Padding for bottomline in textView.
+ * Defaults is 1.
+ */
+@property (nonatomic, assign) NSInteger paddingForBottomLine UI_APPEARANCE_SELECTOR;
+
 /**
  *  Sets the placeholder and the floating title
  *

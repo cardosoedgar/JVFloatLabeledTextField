@@ -75,6 +75,7 @@ static UIColor *colorForEditingTextField;
 {
     self.startingTextContainerInsetTop = self.textContainerInset.top;
     self.floatingLabelShouldLockToTop = YES;
+    _paddingForBottomLine = 1;
     self.textContainer.lineFragmentPadding = 0;
     
     _floatingLabelError = [UILabel new];
@@ -141,7 +142,7 @@ static UIColor *colorForEditingTextField;
         _bottomBorder.borderColor = self.colorForValidTextField.CGColor;
         [self.layer addSublayer:_bottomBorder];
     }
-    _bottomBorder.frame = CGRectMake(0, self.frame.size.height-1, self.frame.size.width, 1);
+    _bottomBorder.frame = CGRectMake(0, self.frame.size.height-_paddingForBottomLine, self.frame.size.width, 1);
     _bottomBorder.borderWidth = 1;
     
     self.layer.masksToBounds = YES;
@@ -258,7 +259,7 @@ static UIColor *colorForEditingTextField;
 
 - (void)setLabelErrorOriginForTextAlignment
 {
-    _floatingLabelError.frame = CGRectMake(0, self.frame.size.height + 2.0f,
+    _floatingLabelError.frame = CGRectMake(0, _bottomBorder.frame.origin.y+2,
                                            300, 20.0f);
 }
 
