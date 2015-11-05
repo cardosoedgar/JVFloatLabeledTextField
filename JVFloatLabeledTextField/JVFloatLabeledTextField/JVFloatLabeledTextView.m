@@ -189,6 +189,11 @@ static UIColor *colorForEditingTextField;
                                                   object:self];
 }
 
+-(void)hideBottomBar{
+    self.bottomBorder.hidden = YES;
+}
+
+
 #pragma mark -
 
 - (UIFont *)defaultFloatingLabelFont

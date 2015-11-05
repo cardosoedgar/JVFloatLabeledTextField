@@ -160,5 +160,5 @@ IB_DESIGNABLE
 @property (nonatomic, strong) UIColor *colorForEditingTextField;
 
 +(void)setupDefaultColorsForInvalidTextField:(UIColor*)invalidTextFieldColor validTextField:(UIColor*)validTextFieldColor editingTextField:(UIColor*)editingTextFieldColor;
-
+-(void)hideBottomBar;
 @end

@@ -145,5 +145,5 @@ IB_DESIGNABLE
 
 +(void)setupDefaultColorsForInvalidTextField:(UIColor*)invalidTextFieldColor validTextField:(UIColor*)validTextFieldColor editingTextField:(UIColor*)editingTextFieldColor;
 
-
+-(void)hideBottomBar;
 @end
