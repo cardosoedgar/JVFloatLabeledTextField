@@ -49,6 +49,8 @@ static UIColor *colorForEditingTextField;
     BOOL _isFloatingLabelFontDefault;
 }
 
+@synthesize textfield = _textfield;
+
 - (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -67,6 +69,10 @@ static UIColor *colorForEditingTextField;
     return self;
 }
 
+- (JVFloatLabeledTextField *)textfield {
+    return self;
+}
+
 - (void)commonInit
 {
     self.delegate = self;
@@ -75,14 +81,6 @@ static UIColor *colorForEditingTextField;
     _floatingLabel.alpha = 0.0f;
     [self addSubview:_floatingLabel];
     
-    _floatingLabelError = [UILabel new];
-    [_floatingLabelError setText:@""];
-    [_floatingLabelError setFont:[self defaultFloatingLabelErrorFont]];
-    [_floatingLabelError setTextColor:self.colorForInvalidTextField];
-    [_floatingLabelError setTextAlignment:NSTextAlignmentLeft];
-    _floatingLabelError.alpha = 1.0f;
-    [self addSubview:_floatingLabelError];
-	
     // some basic default fonts/colors
     _floatingLabelFont = [self defaultFloatingLabelFont];
     _floatingLabel.font = _floatingLabelFont;
@@ -92,7 +90,7 @@ static UIColor *colorForEditingTextField;
     _floatingLabelShowAnimationDuration = kFloatingLabelShowAnimationDuration;
     _floatingLabelHideAnimationDuration = kFloatingLabelHideAnimationDuration;
     [self setFloatingLabelText:self.placeholder];
-
+    
     _adjustsClearButtonRect = YES;
     _isFloatingLabelFontDefault = YES;
 }
@@ -228,7 +226,7 @@ static UIColor *colorForEditingTextField;
                                           _floatingLabel.font.lineHeight + _placeholderYPadding,
                                           _floatingLabel.frame.size.width,
                                           _floatingLabel.frame.size.height);
-
+        
     };
     
     if (animated || 0 != _animateEvenIfNotFirstResponder) {
@@ -361,11 +359,6 @@ static UIColor *colorForEditingTextField;
     [self setNeedsLayout];
 }
 
-- (UIFont *)defaultFloatingLabelErrorFont
-{
-    return [UIFont fontWithName:@"Arial" size:11];
-}
-
 - (void)updateState:(IUCustomTextFieldValidation)validationState withMessage:(NSString *)message
 {
     UIColor *lineColor = nil;
@@ -377,14 +370,10 @@ static UIColor *colorForEditingTextField;
         case IUCustomTextFieldValid:
             lineColor = self.colorForValidTextField;
             borderlineColor = self.colorForEditingTextField;
-            [_floatingLabelError setText:message];
             break;
         case IUCustomTextFieldInvalid:
             lineColor = self.colorForInvalidTextField;
             borderlineColor = self.colorForInvalidTextField;
-            if(message){
-                [_floatingLabelError setText:message];
-            }
             break;
     }
     
@@ -393,18 +382,11 @@ static UIColor *colorForEditingTextField;
     self.layer.masksToBounds = NO;
 }
 
-- (void)setLabelErrorOriginForTextAlignment
-{
-    _floatingLabelError.frame = CGRectMake(0, self.frame.size.height + 2.0f,
-                                           300, 20.0f);
-}
-
 - (void)layoutSubviews
 {
     [super layoutSubviews];
     
     [self setLabelOriginForTextAlignment];
-    [self setLabelErrorOriginForTextAlignment];
     [self initBorder];
     
     CGSize floatingLabelSize = [_floatingLabel sizeThatFits:_floatingLabel.superview.bounds.size];

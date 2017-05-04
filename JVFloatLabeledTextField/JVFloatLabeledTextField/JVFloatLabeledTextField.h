@@ -33,7 +33,7 @@
  * Due to space constraints on mobile devices, it is common to rely solely on placeholders as a means to label fields.
  * This presents a UX problem, in that, once the user begins to fill out a form, no labels are present.
  *
- * `JVFloatLabeledTextField` aims to improve the user experience by having placeholders transition into 
+ * `JVFloatLabeledTextField` aims to improve the user experience by having placeholders transition into
  * "floating labels" that hover above the text field after it is populated with text.
  *
  * JVFloatLabeledTextField supports iOS 6+.
@@ -46,8 +46,18 @@ typedef NS_ENUM(NSInteger, IUCustomTextFieldValidation)
     IUCustomTextFieldInvalid
 };
 
+@class JVFloatLabeledTextField;
+@protocol TextFieldValidatorProtocol <NSObject>
+
+@property(weak, nonatomic) JVFloatLabeledTextField *textfield;
+@property(nullable, nonatomic,copy) NSString *text;
+@property(nullable, nonatomic,weak) id<UITextFieldDelegate> delegate;
+- (void)updateState:(IUCustomTextFieldValidation)validationState withMessage:(NSString *)message;
+
+@end
+
 IB_DESIGNABLE
-@interface JVFloatLabeledTextField : UITextField <UITextFieldDelegate>
+@interface JVFloatLabeledTextField : UITextField <UITextFieldDelegate, TextFieldValidatorProtocol>
 
 /**
  * Read-only access to the floating label.
@@ -78,7 +88,7 @@ IB_DESIGNABLE
 @property (nonatomic) IBInspectable CGFloat placeholderYPadding;
 
 /**
- * Font to be applied to the floating label. 
+ * Font to be applied to the floating label.
  * Defaults to the first applicable of the following:
  * - the custom specified attributed placeholder font at 70% of its size
  * - the custom specified textField font at 70% of its size
@@ -86,7 +96,7 @@ IB_DESIGNABLE
 @property (nonatomic, strong) UIFont * floatingLabelFont;
 
 /**
- * Text color to be applied to the floating label. 
+ * Text color to be applied to the floating label.
  * Defaults to `[UIColor grayColor]`.
  */
 @property (nonatomic, strong) IBInspectable UIColor * floatingLabelTextColor;
@@ -104,7 +114,7 @@ IB_DESIGNABLE
 @property (nonatomic, assign) IBInspectable BOOL animateEvenIfNotFirstResponder;
 
 /**
- * Duration of the animation when showing the floating label. 
+ * Duration of the animation when showing the floating label.
  * Defaults to 0.3 seconds.
  */
 @property (nonatomic, assign) NSTimeInterval floatingLabelShowAnimationDuration;
@@ -123,7 +133,7 @@ IB_DESIGNABLE
 
 /**
  * Indicates whether or not to drop the baseline when entering text. Setting to YES (not the default) means the standard greyed-out placeholder will be aligned with the entered text
- * Defaults to NO (standard placeholder will be above whatever text is entered)
+ * Defaults to NO (standard placeholder will  above whatever text is entered)
  */
 @property (nonatomic, assign) IBInspectable BOOL keepBaseline;
 
