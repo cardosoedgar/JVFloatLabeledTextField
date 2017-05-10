@@ -49,8 +49,6 @@ static UIColor *colorForEditingTextField;
     BOOL _isFloatingLabelFontDefault;
 }
 
-@synthesize textfield = _textfield;
-
 - (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -66,10 +64,6 @@ static UIColor *colorForEditingTextField;
     if (self) {
         [self commonInit];
     }
-    return self;
-}
-
-- (JVFloatLabeledTextField *)textfield {
     return self;
 }
 
@@ -380,6 +374,10 @@ static UIColor *colorForEditingTextField;
     _bottomBorderEdit.borderColor = borderlineColor.CGColor;
     _bottomBorder.borderColor = lineColor.CGColor;
     self.layer.masksToBounds = NO;
+    
+    if (_errorDelegate != nil) {
+        [_errorDelegate setErrorMessage:message];
+    }
 }
 
 - (void)layoutSubviews
@@ -410,7 +408,6 @@ static UIColor *colorForEditingTextField;
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     JVFloatLabeledTextField *field = (JVFloatLabeledTextField*)textField;
     [field updateState:(IUCustomTextFieldValid) withMessage:@""];
-    
     
     return YES;
 }

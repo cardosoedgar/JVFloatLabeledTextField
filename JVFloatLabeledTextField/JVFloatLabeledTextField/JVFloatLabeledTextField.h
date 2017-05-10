@@ -47,17 +47,14 @@ typedef NS_ENUM(NSInteger, IUCustomTextFieldValidation)
 };
 
 @class JVFloatLabeledTextField;
-@protocol TextFieldValidatorProtocol <NSObject>
+@protocol MessageErrorProtocol <NSObject>
 
-@property(weak, nonatomic) JVFloatLabeledTextField *textfield;
-@property(nullable, nonatomic,copy) NSString *text;
-@property(nullable, nonatomic,weak) id<UITextFieldDelegate> delegate;
-- (void)updateState:(IUCustomTextFieldValidation)validationState withMessage:(NSString *)message;
+- (void)setErrorMessage:(NSString *)message;
 
 @end
 
 IB_DESIGNABLE
-@interface JVFloatLabeledTextField : UITextField <UITextFieldDelegate, TextFieldValidatorProtocol>
+@interface JVFloatLabeledTextField : UITextField <UITextFieldDelegate>
 
 /**
  * Read-only access to the floating label.
@@ -152,6 +149,8 @@ IB_DESIGNABLE
 @property (nonatomic, strong) UIColor *colorForInvalidTextField;
 @property (nonatomic, strong) UIColor *colorForValidTextField;
 @property (nonatomic, strong) UIColor *colorForEditingTextField;
+
+@property (nonatomic, strong) id<MessageErrorProtocol> errorDelegate;
 
 +(void)setupDefaultColorsForInvalidTextField:(UIColor*)invalidTextFieldColor validTextField:(UIColor*)validTextFieldColor editingTextField:(UIColor*)editingTextFieldColor;
 
